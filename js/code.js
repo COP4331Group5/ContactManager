@@ -299,48 +299,54 @@ function deleteContact(contactId)
 function searchContact()
 {
   // might have to make all html in one page to preserve userId, otherwise new document will reset it's id to 0
-	var nameSearch = document.getElementById("nameSearch").value;
-	var phoneSearch = document.getElementById("phoneSearch").value;
-	var emailSearch = document.getElementById("emailSearch").value;
-
-
-	var searchResults = document.getElementById("searchResults");
-	searchResults.innerHTML = "";
-	var jsonPayload = '{"userID" : "' + userId + '", "name" : "' + nameSearch + '", "phone" : "' + phoneSearch + '", "email" : "' + emailSearch + '"}';
-
-	var url = urlBase + '/Search.' + extension;
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
+  var prev = "";
+	
+  while(document.getElementById("search").value != "")
 	{
-		xhr.onreadystatechange = function()
+		if(document.getElementById("search") === document.activeElement && prev != document.getElementById("search").value)
 		{
-			if (this.readyState == 4 && this.status == 200)
+			var searchResults = document.getElementById("searchResults");
+			searchResults.innerHTML = "";
+			var jsonPayload = '{"userID" : "' + userId + '", "name" : "' + nameSearch + '", "phone" : "' + phoneSearch + '", "email" : "' + emailSearch + '"}';
+		
+			var url = urlBase + '/Search.' + extension;
+		
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+			try
 			{
-				var jsonObject = JSON.parse( xhr.responseText );
-
-				var i;
-				for( i=0; i<jsonObject.results.length; i++ )
+				xhr.onreadystatechange = function()
 				{
-					var contactResult = document.createElement("div");
-					contactResult.innerHTML = jsonObject.results[i];
-					searchResults.appendChild(contactResult);
-					if(i%3 == 2)
+					if (this.readyState == 4 && this.status == 200)
 					{
-						var contactBr = document.createElement("br");
-						searchResults.appendChild(contactBr);
+						var jsonObject = JSON.parse( xhr.responseText );
+		
+						var i;
+						for( i=0; i<jsonObject.results.length; i++ )
+						{
+							var contactResult = document.createElement("div");
+							contactResult.innerHTML = jsonObject.results[i];
+							searchResults.appendChild(contactResult);
+							if(i%3 == 2)
+							{
+								var contactBr = document.createElement("br");
+								searchResults.appendChild(contactBr);
+							}
+						}
 					}
-				}
+				};
+				xhr.send(jsonPayload);
+				prev = document.getElementById("search").value;
 			}
-		};
-		xhr.send(jsonPayload);
+			catch(err)
+			{
+				return;
+			}
+		}
+		else 
+		{
+			return;
+		}
 	}
-	catch(err)
-	{
-		// document.getElementById("colorSearchResult").innerHTML = err.message;
-		return;
-	}
-
 }
