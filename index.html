@@ -95,25 +95,10 @@
       <div class="row">
         <div class="col-md-4">
           <div class="form-group">
-            <label for="name" class="control-label col-md-3">Name</label>
+            <label for="name" class="control-label col-md-3">Search</label>
             <div class="col-md-8">
-              <input type="text" name="name" id="nameSearch" class="form-control">
+              <input type="text" onfocus="searchContact()" name="name" id="search" class="form-control">
             </div>
-          </div>
-          <div class="form-group">
-            <label for="name" class="control-label col-md-3">Email</label>
-            <div class="col-md-8">
-              <input type="text" name="name" id="emailSearch" class="form-control">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="name" class="control-label col-md-3">Phone</label>
-            <div class="col-md-8">
-              <input type="text" name="name" id="phoneSearch" class="form-control">
-            </div>
-          </div>
-          <div class="col-md-offset-8">
-            <button type="button" name="button" class="btn btn-primary" onclick="searchContact()">Search</button>
           </div>
           <div class="col-md-3" id="searchResults">
 
