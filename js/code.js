@@ -161,9 +161,7 @@ function createUser()
 		{
 			if (this.readyState == 4 && this.status == 200)
 			{
-				alert("Error: Username already in use!");
-				confirm.focus();
-		    password.focus();
+				//alert("User has been added");
 			}
 		};
 
@@ -173,11 +171,8 @@ function createUser()
 	}
 	catch(err)
 	{
-		alert("Error: Incorrect username or password!");
+		alert("Error: Username already in use!");
 		goToSignup();
-		document.getElementById("confirmPassword").focus();
-	  password.focus();
-    login.focus();
 		return;
 	}
 }
@@ -229,7 +224,7 @@ function loadContacts()
 	}
 	catch(err)
 	{
-		document.getElementById("loginResult").innerHTML = err.message;
+		alert(err.message);
 	}
 
 }
@@ -268,7 +263,7 @@ function addContact()
 	}
 	catch(err)
 	{
-		// document.getElementById("colorAddResult").innerHTML = err.message;
+		alert(err.message);
 		return;
 	}
 
@@ -300,7 +295,7 @@ function deleteContact(contactId)
 	}
 	catch(err)
 	{
-		// document.getElementById("loginResult").innerHTML = err.message;
+		alert(err.message);
 		return;
 	}
 }
@@ -347,7 +342,7 @@ function searchContact()
 	}
 	catch(err)
 	{
-		// document.getElementById("colorSearchResult").innerHTML = err.message;
+		alert(err.message);
 		return;
 	}
 
