@@ -1,4 +1,3 @@
-
 var urlBase = 'http://COP4331-4.com/LAMPAPI';
 var extension = "php";
 
@@ -50,7 +49,9 @@ function doLogin(type)
 	}
 	catch(err)
 	{
-		// document.getElementById("loginResult").innerHTML = err.message;
+		alert("Error: Incorrect username or password!");
+		goToLogin();
+		document.getElementById("loginName").focus();
 		return;
 	}
 
@@ -160,7 +161,9 @@ function createUser()
 		{
 			if (this.readyState == 4 && this.status == 200)
 			{
-				//document.getElementById("addUser").innerHTML = "User has been created";
+				alert("Error: Username already in use!");
+				confirm.focus();
+		    password.focus();
 			}
 		};
 
@@ -170,7 +173,12 @@ function createUser()
 	}
 	catch(err)
 	{
-		//document.getElementById("addUser").innerHTML = err.message;
+		alert("Error: Incorrect username or password!");
+		goToSignup();
+		document.getElementById("confirmPassword").focus();
+	  password.focus();
+    login.focus();
+		return;
 	}
 }
 
@@ -299,54 +307,48 @@ function deleteContact(contactId)
 function searchContact()
 {
   // might have to make all html in one page to preserve userId, otherwise new document will reset it's id to 0
-  var prev = "";
-	
-  while(document.getElementById("search").value != "")
+	var nameSearch = document.getElementById("nameSearch").value;
+	var phoneSearch = document.getElementById("phoneSearch").value;
+	var emailSearch = document.getElementById("emailSearch").value;
+
+
+	var searchResults = document.getElementById("searchResults");
+	searchResults.innerHTML = "";
+	var jsonPayload = '{"userID" : "' + userId + '", "name" : "' + nameSearch + '", "phone" : "' + phoneSearch + '", "email" : "' + emailSearch + '"}';
+
+	var url = urlBase + '/Search.' + extension;
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try
 	{
-		if(document.getElementById("search") === document.activeElement && prev != document.getElementById("search").value)
+		xhr.onreadystatechange = function()
 		{
-			var searchResults = document.getElementById("searchResults");
-			searchResults.innerHTML = "";
-			var jsonPayload = '{"userID" : "' + userId + '", "name" : "' + nameSearch + '", "phone" : "' + phoneSearch + '", "email" : "' + emailSearch + '"}';
-		
-			var url = urlBase + '/Search.' + extension;
-		
-			var xhr = new XMLHttpRequest();
-			xhr.open("POST", url, true);
-			xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-			try
+			if (this.readyState == 4 && this.status == 200)
 			{
-				xhr.onreadystatechange = function()
+				var jsonObject = JSON.parse( xhr.responseText );
+
+				var i;
+				for( i=0; i<jsonObject.results.length; i++ )
 				{
-					if (this.readyState == 4 && this.status == 200)
+					var contactResult = document.createElement("div");
+					contactResult.innerHTML = jsonObject.results[i];
+					searchResults.appendChild(contactResult);
+					if(i%3 == 2)
 					{
-						var jsonObject = JSON.parse( xhr.responseText );
-		
-						var i;
-						for( i=0; i<jsonObject.results.length; i++ )
-						{
-							var contactResult = document.createElement("div");
-							contactResult.innerHTML = jsonObject.results[i];
-							searchResults.appendChild(contactResult);
-							if(i%3 == 2)
-							{
-								var contactBr = document.createElement("br");
-								searchResults.appendChild(contactBr);
-							}
-						}
+						var contactBr = document.createElement("br");
+						searchResults.appendChild(contactBr);
 					}
-				};
-				xhr.send(jsonPayload);
-				prev = document.getElementById("search").value;
+				}
 			}
-			catch(err)
-			{
-				return;
-			}
-		}
-		else 
-		{
-			return;
-		}
+		};
+		xhr.send(jsonPayload);
 	}
+	catch(err)
+	{
+		// document.getElementById("colorSearchResult").innerHTML = err.message;
+		return;
+	}
+
 }
